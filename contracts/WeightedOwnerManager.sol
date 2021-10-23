@@ -49,7 +49,7 @@ contract WeightedOwnerManager is SelfAuthorized {
     /// @dev Setup function sets initial storage of contract.
     /// @param _owners List of Safe owners.
     /// @param _threshold Number of required confirmations for a Safe transaction.
-    function setupOwnersWithPoints(address[] memory _owners, address[] memory _points, uint256 _threshold) internal {
+    function setupOwnersWithPoints(address[] memory _owners, uint256[] memory _points, uint256 _threshold) internal {
         // Threshold can only be 0 at initialization.
         // Check ensures that setup function can only be called once.
         require(threshold == 0, "GS200");
@@ -80,7 +80,7 @@ contract WeightedOwnerManager is SelfAuthorized {
     /// @notice Adds the owner `owner` to the Safe and updates the threshold to `_threshold`.
     /// @param owner New owner address.
     /// @param _threshold New threshold.
-    function addOwnerWithThreshold(address owner, uint256 _threshold, uint256 points) public authorized {
+    function addOwnerWithThreshold(address owner, uint256 _threshold, uint256 _points) public authorized {
         // Owner address cannot be null, the sentinel or the Safe itself.
         require(owner != address(0) && owner != SENTINEL_OWNERS && owner != address(this), "GS203");
         // No duplicate owners allowed.
@@ -88,11 +88,11 @@ contract WeightedOwnerManager is SelfAuthorized {
         owners[owner] = owners[SENTINEL_OWNERS];
         owners[SENTINEL_OWNERS] = owner;
         ownerCount++;
-        emit AddedOwner(owner);
+        emit AddedOwner(owner, _points);
         // Change threshold if threshold was changed.
         if (threshold != _threshold) changeThreshold(_threshold);
 
-        points[owner] = points;
+        points[owner] = _points;
     }
 
     /// @dev Allows to remove an owner from the Safe and update the threshold at the same time.
@@ -117,31 +117,6 @@ contract WeightedOwnerManager is SelfAuthorized {
         emit RemovedOwner(owner);
         // Change threshold if threshold was changed.
         if (threshold != _threshold) changeThreshold(_threshold);
-    }
-
-    /// @dev Allows to swap/replace an owner from the Safe with another address.
-    ///      This can only be done via a Safe transaction.
-    /// @notice Replaces the owner `oldOwner` in the Safe with `newOwner`.
-    /// @param prevOwner Owner that pointed to the owner to be replaced in the linked list
-    /// @param oldOwner Owner address to be replaced.
-    /// @param newOwner New owner address.
-    function swapOwner(
-        address prevOwner,
-        address oldOwner,
-        address newOwner
-    ) public authorized {
-        // Owner address cannot be null, the sentinel or the Safe itself.
-        require(newOwner != address(0) && newOwner != SENTINEL_OWNERS && newOwner != address(this), "GS203");
-        // No duplicate owners allowed.
-        require(owners[newOwner] == address(0), "GS204");
-        // Validate oldOwner address and check that it corresponds to owner index.
-        require(oldOwner != address(0) && oldOwner != SENTINEL_OWNERS, "GS203");
-        require(owners[prevOwner] == oldOwner, "GS205");
-        owners[newOwner] = owners[oldOwner];
-        owners[prevOwner] = newOwner;
-        owners[oldOwner] = address(0);
-        emit RemovedOwner(oldOwner);
-        emit AddedOwner(newOwner);
     }
 
     /// @dev Allows to update the number of required confirmations by Safe owners.
@@ -183,8 +158,8 @@ contract WeightedOwnerManager is SelfAuthorized {
 
     /// @dev Returns array of weights.
     /// @return Array of Safe owners's points.
-    function getPoints() public view returns (address[] memory) {
-        address[] memory array = new address[](ownerCount);
+    function getPoints() public view returns (uint256[] memory) {
+        uint256[] memory array = new uint256[](ownerCount);
 
         // populate return array
         uint256 index = 0;
