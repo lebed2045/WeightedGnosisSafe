@@ -1,0 +1,22 @@
+import { Wallet, Contract } from "ethers";
+export declare const defaultCallbackHandlerDeployment: () => Promise<any>;
+export declare const defaultCallbackHandlerContract: () => Promise<import("ethers").ContractFactory>;
+export declare const compatFallbackHandlerDeployment: () => Promise<any>;
+export declare const compatFallbackHandlerContract: () => Promise<import("ethers").ContractFactory>;
+export declare const getSafeSingleton: () => Promise<Contract>;
+export declare const getFactory: () => Promise<Contract>;
+export declare const getSimulateTxAccessor: () => Promise<Contract>;
+export declare const getMultiSend: () => Promise<Contract>;
+export declare const getMultiSendCallOnly: () => Promise<Contract>;
+export declare const getCreateCall: () => Promise<Contract>;
+export declare const migrationContract: () => Promise<import("ethers").ContractFactory>;
+export declare const getMock: () => Promise<Contract>;
+export declare const getSafeTemplate: () => Promise<Contract>;
+export declare const getSafeWithOwners: (owners: string[], threshold?: number | undefined, fallbackHandler?: string | undefined, logGasUsage?: boolean | undefined) => Promise<Contract>;
+export declare const getDefaultCallbackHandler: () => Promise<Contract>;
+export declare const getCompatFallbackHandler: () => Promise<Contract>;
+export declare const compile: (source: string) => Promise<{
+    data: string;
+    interface: any;
+}>;
+export declare const deployContract: (deployer: Wallet, source: string) => Promise<Contract>;
