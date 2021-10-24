@@ -9,12 +9,11 @@
   "scripts": {
     "test": "npx hardhat test --show-stack-traces",
     "coverage": "npx hardhat coverage",
-    "generate-types": "truffle compile && typechain --target=truffle-v5 'build/contracts/*.json'",
-    "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
+    "generate-types": "rm -rf ./types && truffle compile && typechain --target=truffle-v5 'build/contracts/*.json'",
+    "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate --network rinkeby",
     "typecheck": "tsc --noEmit",
     "compile": "truffle compile && npm run generate-types && npm run typecheck",
-    "verify-rinkeby": "truffle run verify GnosisSafeProxy --network rinkeby\ntruffle run verify StableUnitDAOaNFT --network rinkeby\ntruffle run verify SuDAO --network rinkeby\ntruffle run verify VestingToken --network rinkeby \ntruffle run verify TokenDistributor_v3s1 --network rinkeby\ntruffle run verify StableUnitDAOogNFT --network rinkeby\n\ntruffle run verify NftMock --network rinkeby\ntruffle run verify TokenMock --network rinkeby",
-    "grant-og": "npx hardhat ogDistribution --address 0xfffffffff615bee8d0c7d329ebe0d444ab46ee5a --filename ./misc/ogNftAirdrop.txt --verbose"
+    "verify-rinkeby": ""
   },
   "author": "",
   "license": "ISC",

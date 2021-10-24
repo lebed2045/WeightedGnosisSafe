@@ -40,6 +40,10 @@ contract WeightModule is SignatureDecoder, WeightedOwnerManager {
     bytes32 public constant DOMAIN_SEPARATOR_TYPEHASH = 0x47e79534a245952e8b16893a336b85a3d9ea9fa8c573f3d803afb92a79469218;
     bytes32 private constant SAFE_TX_TYPEHASH = 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8;
 
+    constructor (address _safe) {
+        safe = _safe;
+    }
+
      /// @dev Allows to execute a Safe transaction confirmed by required number of owners and then pays the account that submitted the transaction.
     ///      Note: The fees are always transferred, even if the user transaction fails.
     /// @param to Destination address of Safe transaction.

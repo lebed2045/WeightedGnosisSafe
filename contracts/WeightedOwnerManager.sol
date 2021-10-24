@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity >=0.7.0 <0.9.0;
 import "./dependencies/gnosis-safe/common/SelfAuthorized.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
 
@@ -14,7 +15,7 @@ import "./dependencies/gnosis-safe/common/SelfAuthorized.sol";
 
 /// @title OwnerManager - Manages a set of weighted owners and a threshold to perform actions.
 /// fork of
-contract WeightedOwnerManager is SelfAuthorized {
+contract WeightedOwnerManager is Ownable {
     event AddedOwner(address owner, uint256 points);
     event RemovedOwner(address owner);
     event ChangedThreshold(uint256 threshold);
@@ -59,7 +60,7 @@ contract WeightedOwnerManager is SelfAuthorized {
     /// @dev Setup function sets initial storage of contract.
     /// @param _owners List of Safe owners.
     /// @param _threshold Number of required confirmations for a Safe transaction.
-    function setupOwnersWithPoints(address[] memory _owners, uint256[] memory _points, uint256 _threshold) internal {
+    function setupOwnersWithPoints(address[] memory _owners, uint256[] memory _points, uint256 _threshold) public onlyOwner {
         // Threshold can only be 0 at initialization.
         // Check ensures that setup function can only be called once.
         require(threshold == 0, "GS200");
@@ -90,7 +91,7 @@ contract WeightedOwnerManager is SelfAuthorized {
     /// @notice Adds the owner `owner` to the Safe and updates the threshold to `_threshold`.
     /// @param owner New owner address.
     /// @param _threshold New threshold.
-    function addOwnerWithThreshold(address owner, uint256 _threshold, uint256 _points) public authorized {
+    function addOwnerWithThreshold(address owner, uint256 _threshold, uint256 _points) public onlyOwner {
         // Owner address cannot be null, the sentinel or the Safe itself.
         require(owner != address(0) && owner != SENTINEL_OWNERS && owner != address(this), "GS203");
         // No duplicate owners allowed.
@@ -115,7 +116,7 @@ contract WeightedOwnerManager is SelfAuthorized {
         address prevOwner,
         address owner,
         uint256 _threshold
-    ) public authorized {
+    ) public onlyOwner {
         // Only allow to remove an owner, if threshold can still be reached.
         require(ownerCount - 1 >= _threshold, "GS201");
         // Validate owner address and check that it corresponds to owner index.
@@ -133,7 +134,7 @@ contract WeightedOwnerManager is SelfAuthorized {
     ///      This can only be done via a Safe transaction.
     /// @notice Changes the threshold of the Safe to `_threshold`.
     /// @param _threshold New threshold.
-    function changeThreshold(uint256 _threshold) public authorized {
+    function changeThreshold(uint256 _threshold) public onlyOwner {
         // Validate that threshold is smaller than number of owners.
         require(_threshold <= ownerCount, "GS201");
         // There has to be at least one Safe owner.

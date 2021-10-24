@@ -9,8 +9,15 @@ const RINKEBY = {
 
     DEVELOPERS: [
         "0xF2A961aF157426953e392F6468B0162F86B2aCBC",
+        "0xabacaba1d39bee54c30c7d6dc85097302a106ef5",
         "0xb79EbAa162f92A3E5B8E0CE3446e8b4a4E5C0A4B",
         "0xace5686774d6b5dee84dc9f94fa803536415f172",
+    ],
+    POINTS: [
+        50,
+        40,
+        30,
+        20
     ],
     TESTERS: [
         "0x108E17e5d67102F5a7896056F5897f29674dEf6f",
@@ -28,7 +35,7 @@ const RINKEBY = {
 
 }
 
-export {RINKEBY, OG_NFT_JSON, A_NFT_JSON};
+export {RINKEBY};
 
 export function getDeployedAddresses(network: string): typeof RINKEBY {
     let NETWORK = {} as typeof RINKEBY;
