@@ -10,7 +10,7 @@
     "test": "npx hardhat test --show-stack-traces",
     "coverage": "npx hardhat coverage",
     "generate-types": "truffle compile && typechain --target=truffle-v5 'build/contracts/*.json'",
-    "migrate": "npm run test && tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
+    "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "typecheck": "tsc --noEmit",
     "compile": "truffle compile && npm run generate-types && npm run typecheck",
     "verify-rinkeby": "truffle run verify GnosisSafeProxy --network rinkeby\ntruffle run verify StableUnitDAOaNFT --network rinkeby\ntruffle run verify SuDAO --network rinkeby\ntruffle run verify VestingToken --network rinkeby \ntruffle run verify TokenDistributor_v3s1 --network rinkeby\ntruffle run verify StableUnitDAOogNFT --network rinkeby\n\ntruffle run verify NftMock --network rinkeby\ntruffle run verify TokenMock --network rinkeby",

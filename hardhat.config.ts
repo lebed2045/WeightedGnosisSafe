@@ -9,11 +9,7 @@ import {task} from "hardhat/config";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-waffle";
 
-import "./tasks/accounts.ts";
-import "./tasks/ogDistribution.ts";
-import "./tasks/transfer-owner.ts";
-import "./tasks/grant-role.ts";
-import "./tasks/renounce-role.ts";
+
 
 const {
     INFURA_KEY,

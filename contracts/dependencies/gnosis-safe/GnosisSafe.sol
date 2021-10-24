@@ -235,7 +235,7 @@ contract GnosisSafe is
      * @param dataHash Hash of the data (could be either a message hash or transaction hash)
      * @param data That should be signed (this is passed to an external validator contract)
      * @param signatures Signature data that should be verified. Can be ECDSA signature, contract signature (EIP-1271) or approved hash.
-     * @param requiredSignatures Amount of required valid signatures.
+     * @param requiredSignatures Amount of required valid points signatures.
      */
     function checkNSignatures(
         bytes32 dataHash,
@@ -244,7 +244,7 @@ contract GnosisSafe is
         uint256 requiredSignatures
     ) public view {
         // Check that the provided signature data is not too short
-        require(signatures.length >= requiredSignatures.mul(65), "GS020");
+//        require(signatures.length >= requiredSignatures.mul(65), "GS020");
         // There cannot be an owner with address 0.
         address lastOwner = address(0);
         address currentOwner;
@@ -252,7 +252,8 @@ contract GnosisSafe is
         bytes32 r;
         bytes32 s;
         uint256 i;
-        for (i = 0; i < requiredSignatures; i++) {
+        uint256 totalPoint;
+        for (i = 0; i < signatures.length; i++) {
             (v, r, s) = signatureSplit(signatures, i);
             if (v == 0) {
                 // If v is 0 then it is a contract signature
@@ -298,9 +299,11 @@ contract GnosisSafe is
                 // Use ecrecover with the messageHash for EOA signatures
                 currentOwner = ecrecover(dataHash, v, r, s);
             }
+
             require(currentOwner > lastOwner && owners[currentOwner] != address(0) && currentOwner != SENTINEL_OWNERS, "GS026");
             lastOwner = currentOwner;
         }
+
     }
 
     /// @dev Allows to estimate a Safe transaction.

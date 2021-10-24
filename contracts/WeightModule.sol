@@ -1,6 +1,16 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity >=0.7.0 <0.9.0;
 
+/**
+
+███████╗████████╗██╗░░██╗██╗░░░░░██╗░██████╗██████╗░░█████╗░███╗░░██╗██████╗░░█████╗░██████╗░░░███╗░░
+██╔════╝╚══██╔══╝██║░░██║██║░░░░░██║██╔════╝██╔══██╗██╔══██╗████╗░██║╚════██╗██╔══██╗╚════██╗░████║░░
+█████╗░░░░░██║░░░███████║██║░░░░░██║╚█████╗░██████╦╝██║░░██║██╔██╗██║░░███╔═╝██║░░██║░░███╔═╝██╔██║░░
+██╔══╝░░░░░██║░░░██╔══██║██║░░░░░██║░╚═══██╗██╔══██╗██║░░██║██║╚████║██╔══╝░░██║░░██║██╔══╝░░╚═╝██║░░
+███████╗░░░██║░░░██║░░██║███████╗██║██████╔╝██████╦╝╚█████╔╝██║░╚███║███████╗╚█████╔╝███████╗███████╗
+╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝╚═════╝░╚═════╝░░╚════╝░╚═╝░░╚══╝╚══════╝░╚════╝░╚══════╝╚══════╝
+*/
+
 import "./dependencies/gnosis-safe/common/Enum.sol";
 import "./dependencies/gnosis-safe/common/SignatureDecoder.sol";
 import "./dependencies/gnosis-safe/interfaces/ISignatureValidator.sol";
@@ -78,7 +88,7 @@ contract WeightModule is SignatureDecoder, WeightedOwnerManager {
             txHash = keccak256(txHashData);
             checkSignatures(txHash, txHashData, signatures);
         }
-        
+
         require(GnosisSafe(safe).execTransactionFromModule(to, value, data, operation), "Could not execute token transfer");
         return true;
     }
@@ -117,7 +127,7 @@ contract WeightModule is SignatureDecoder, WeightedOwnerManager {
 
         // There cannot be an owner with address 0.
         address lastOwner = address(0);
-        uint256 _points = 0;
+        uint256 signersTotalPoints = 0;
         address currentOwner;
         uint8 v;
         bytes32 r;
@@ -173,10 +183,10 @@ contract WeightModule is SignatureDecoder, WeightedOwnerManager {
 
             require(currentOwner > lastOwner && owners[currentOwner] != address(0) && currentOwner != SENTINEL_OWNERS, "GS026");
             lastOwner = currentOwner;
-            _points += points[currentOwner];
+            signersTotalPoints += points[currentOwner];
         }
 
-        require(requiredSignatures <= _points, "Signer points below threshold");
+        require(requiredSignatures <= signersTotalPoints, "Signer points below threshold");
     }
 
     function domainSeparator() public view returns (bytes32) {
